@@ -1,4 +1,13 @@
 
+# one time pulled pork run for first install / config changes
+bash 'run_pulledpork' do
+  code <<-EOH
+  /usr/local/bin/pulledpork.pl -c #{node['pulledpork']['pp_config_path']} -l;
+  service #{node['pulledpork']['snort_svc_name']} restart
+  EOH
+  action :nothing
+end
+
 template node['pulledpork']['disablesid'] do
   source 'disablesid.conf.erb'
   owner 'root'
@@ -31,13 +40,4 @@ cookbook_file '/usr/lib/snort_dynamicrules/os-linux.so' do
   owner 'root'
   group 'root'
   mode '0655'
-end
-
-# one time pulled pork run for first install / config changes
-bash 'run_pulledpork' do
-  code <<-EOH
-  /usr/local/bin/pulledpork.pl -c #{node['pulledpork']['pp_config_path']} -l;
-  service #{node['pulledpork']['snort_svc_name']} restart
-  EOH
-  action :nothing
 end
